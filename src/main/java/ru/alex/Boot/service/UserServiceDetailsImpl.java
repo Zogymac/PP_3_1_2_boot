@@ -7,38 +7,27 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.alex.Boot.model.User;
 import ru.alex.Boot.repository.UserRepository;
+import ru.alex.Boot.security.MyUserDetails;
 
-
-import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceDetailsImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceDetailsImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
-    public User findUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepository.findByName(username);
+        if (userOptional.isEmpty()) {
+            throw new UsernameNotFoundException("User not found!");
+        }
 
-    @Override
-    public void updateUser(User user) {
-        userRepository.save(user);
+        return new MyUserDetails(userOptional.get());
     }
-
-    @Override
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
 }
