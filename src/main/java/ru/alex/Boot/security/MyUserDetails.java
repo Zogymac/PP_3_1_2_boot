@@ -1,10 +1,12 @@
 package ru.alex.Boot.security;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.alex.Boot.model.User;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class MyUserDetails implements UserDetails {
@@ -18,7 +20,11 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(); // TODO: Тут будем получить роли пользователя(админ, пользователь, суперадмин)
+        List<GrantedAuthority> list = null;
+        list.add(new SimpleGrantedAuthority(user.getRole())); // TODO: Сделать for по всем элементам который заполняет список ролей
+//        list.add(new SimpleGrantedAuthority(user.getRole()));
+        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
+//        return list;
     }
 
     @Override
