@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Users</title>
@@ -19,14 +21,9 @@
                 <td th:text="${user.getId()}"></td>
                 <td th:text="${user.getName()}"></td>
                 <td th:text="${user.getEmail()}"></td>
-                <td>
-                    <a th:href="@{/user/edit(id=${user.id})}">Edit</a>
-                    <a th:href="@{/user/delete(id=${user.id})}">Delete</a>
-                </td>
             </tr>
         </tbody>
     </table>
-    <a href="/user/add">Add new user</a>
     <a href="/logout">Logout</a>
 </body>
 </html>

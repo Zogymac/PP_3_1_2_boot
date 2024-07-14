@@ -1,5 +1,6 @@
 package ru.alex.Boot.service;
 
+import ru.alex.Boot.model.Role;
 import ru.alex.Boot.model.User;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface UserService {
     void deleteUser(Long id);
 
     List<User> getAllUsers();
+
+    List<Role> getAllRoles();
 }

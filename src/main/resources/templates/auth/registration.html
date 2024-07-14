@@ -18,8 +18,23 @@
     <label for="password">Введите пароль: </label>
     <input type="password" th:field="*{password}" id="password">
     <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
-
-    <input type="submit" value="Login"/>
+    <br/>
+<!--    <label>Roles:
+        <input type="checkbox" name="roles"
+            th:each="role : ${allRoles}"
+               th:text="${role.name}"
+               th:value="${role.id}"
+               th:field="*{role}"
+        />
+    </label>-->
+    <div>
+        <label for="roles">Roles:</label>
+        <select id="roles" th:field="*{role}" multiple>
+            <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
+        </select>
+        <br/>
+        <input type="submit" value="Login"/>
+    </div>
 
     <div th:if="${param.error}" style="color: red">
         Неправильное имя или пароль

@@ -1,6 +1,7 @@
 package ru.alex.Boot.model;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="users")
@@ -16,19 +17,36 @@ public class User {
 
     private String password;
 
-    private String role;
+//    @ManyToMany(cascade = {CascadeType.ALL},
+//                fetch = FetchType.EAGER)
+@ManyToMany(cascade = {CascadeType.MERGE},
+            fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id")}
+    )
+    private Set<Role> role;
 
     public User() {
 
     }
 
-    public User(Long id, String name, String email, String password, String role) {
+    public User(Long id, String name, String email, String password) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    public User(Long id, String name, String email, String password, Set<Role> role) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
     }
+
 
     public Long getId() {
         return id;
@@ -62,11 +80,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Set<Role> getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Set<Role> role) {
         this.role = role;
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.alex.Boot.service.UserServiceDetailsImpl;
 
@@ -15,10 +14,12 @@ import ru.alex.Boot.service.UserServiceDetailsImpl;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserServiceDetailsImpl userServiceDetails;
+    private final LoginSuccesHandler loginSuccesHandler;
 
     @Autowired
-    public SecurityConfig(UserServiceDetailsImpl userServiceDetails) {
+    public SecurityConfig(UserServiceDetailsImpl userServiceDetails, LoginSuccesHandler loginSuccesHandler) {
         this.userServiceDetails = userServiceDetails;
+        this.loginSuccesHandler = loginSuccesHandler;
     }
 
     @Override
@@ -27,14 +28,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // конфирурием авторизацию
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN") // Тут не надо ROLE_
+                .antMatchers("/admin", "/user/edit/**").hasRole("ADMIN") // Тут не надо ROLE_
                 .antMatchers("/auth/login", "/auth/registration", "/error").permitAll()
-                .anyRequest().hasAnyRole("USER", "ADMIN") 
-//                .anyRequest().authenticated()
+//                .anyRequest().hasAnyRole("USER", "ADMIN")
+                .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/auth/login")
                 .loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/user", true)
+                .successHandler(loginSuccesHandler)
+//                .defaultSuccessUrl("/user", true)
                 .failureUrl("/auth/login?error")
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/auth/login");

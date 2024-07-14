@@ -9,7 +9,7 @@ import ru.alex.Boot.service.UserService;
 
 
 @Controller
-@RequestMapping("/user")
+//@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -19,34 +19,42 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/user")
     public String listUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "users";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/admin")
+    public String listUserAdmin(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
+        return "admin";
+    }
+
+    @GetMapping("/admin/add")
     public String showForm(Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("roles", userService.getAllRoles());
         return "user-form";
     }
 
-    @GetMapping("/edit")
+    @GetMapping("/admin/edit")
     public String showEditForm(@RequestParam("id") Long id, Model model) {
         User user = userService.findUserById(id);
         model.addAttribute("user", user);
+        model.addAttribute("roles", userService.getAllRoles());
         return "user-form";
     }
 
-    @PostMapping
+    @PostMapping("/admin/edit")
     public String saveUser(@ModelAttribute("user") User user) {
         userService.updateUser(user);
-        return "redirect:/user";
+        return "redirect:/admin";
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/admin/delete")
     public String deleteUser(@RequestParam("id") Long id) {
         userService.deleteUser(id);
-        return "redirect:/user";
+        return "redirect:/admin";
     }
 }

@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Update user</h1>
-    <form th:action="@{/user}" th:object="${user}" method="post">
+    <form th:action="@{/admin/edit}" th:object="${user}" method="post">
         <input type="hidden" th:field="*{id}"/>
         <div>
             <label>Name:</label>
@@ -16,6 +16,20 @@
             <label>email:</label>
             <input type="text" th:field="*{email}"/>
         </div>
+
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"/><br/>
+        </div>
+
+        <div>
+            <label for="roles">Roles:</label>
+            <select id="roles" th:field="*{role}" multiple>
+                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
+            </select>
+            <br/>
+        </div>
+
         <div>
             <button type="submit">Save</button>
         </div>

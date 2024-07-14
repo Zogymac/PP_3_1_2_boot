@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.alex.Boot.model.User;
 import ru.alex.Boot.repository.UserRepository;
 
+
 @Service
 public class RegistrationService {
 
@@ -21,8 +22,13 @@ public class RegistrationService {
 
     @Transactional
     public void register(User user) {
+//        user.setName(user.getName());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("ROLE_USER");
+//        user.setRole("ROLE_USER");
+//        Set<Role> roles = new HashSet<>();
+//        roles.addAll(user.getRole());
+//        user.setRole(roles);
+
         userRepository.save(user);
     }
 }
