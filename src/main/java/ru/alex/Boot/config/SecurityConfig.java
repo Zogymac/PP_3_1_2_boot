@@ -30,8 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin", "/user/edit/**").hasRole("ADMIN") // Тут не надо ROLE_
                 .antMatchers("/auth/login", "/auth/registration", "/error").permitAll()
-//                .anyRequest().hasAnyRole("USER", "ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().hasAnyRole("USER", "ADMIN")
+//                .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/auth/login")
                 .loginProcessingUrl("/process_login")
