@@ -1,28 +1,27 @@
 package ru.alex.Boot.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.alex.Boot.model.Role;
 import ru.alex.Boot.model.User;
-import ru.alex.Boot.repository.RoleRepository;
 import ru.alex.Boot.repository.UserRepository;
 
-
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -36,10 +35,15 @@ public class UserServiceImpl implements UserService {
     public void updateUser(User user) {
         if (user.getId() != null) {
             User existingUser = findUserById(user.getId());
-            existingUser.setName(user.getName());
-            existingUser.setRole(user.getRole());
-            existingUser.setEmail(user.getEmail());
-
+            if (user.getName() != null && !user.getName().equals(existingUser.getName())) {
+                existingUser.setName(user.getName());
+            }
+            if (user.getRole() != null && !user.getRole().equals(existingUser.getRole())) {
+                existingUser.setRole(user.getRole());
+            }
+            if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())) {
+                existingUser.setEmail(user.getEmail());
+            }
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
@@ -48,8 +52,6 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
         }
-
-
     }
 
     @Transactional
@@ -63,9 +65,17 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+
     @Override
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+    @Transactional
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepository.findByName(username);
+        if (userOptional.isEmpty()) {
+            throw new UsernameNotFoundException("User not found!");
+        }
+
+        return userOptional.get();
     }
+
 
 }

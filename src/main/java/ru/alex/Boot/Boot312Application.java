@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication()
 public class Boot312Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Boot312Application.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Boot312Application.class, args);
+    }
 
 }

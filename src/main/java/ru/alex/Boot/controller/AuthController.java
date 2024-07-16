@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.alex.Boot.model.User;
-import ru.alex.Boot.service.RegistrationService;
+import ru.alex.Boot.service.RoleService;
 import ru.alex.Boot.service.UserService;
 import ru.alex.Boot.util.UserValidator;
 
@@ -20,15 +20,15 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final RegistrationService registrationService;
     private final UserValidator userValidator;
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public AuthController(RegistrationService registrationService, UserValidator userValidator, UserService userService) {
-        this.registrationService = registrationService;
+    public AuthController(UserValidator userValidator, UserService userService, RoleService roleService) {
         this.userValidator = userValidator;
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping("/login")
@@ -36,21 +36,14 @@ public class AuthController {
         return "auth/login";
     }
 
-/*    @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("user") User user) {
-
-
-        return "auth/registration";
-    }*/
 
     @GetMapping("/registration")
     public String registrationPage(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("roles", userService.getAllRoles());
+        model.addAttribute("roles", roleService.getAllRoles());
 
         return "auth/registration";
     }
-
 
 
     @PostMapping("/registration")
@@ -62,7 +55,7 @@ public class AuthController {
             return "/auth/registration";
         }
 
-        registrationService.register(user);
+        userService.updateUser(user);
 
         return "redirect:/auth/login";
     }
