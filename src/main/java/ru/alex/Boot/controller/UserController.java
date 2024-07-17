@@ -11,6 +11,8 @@ import ru.alex.Boot.model.User;
 import ru.alex.Boot.service.RoleService;
 import ru.alex.Boot.service.UserService;
 
+import java.security.Principal;
+
 
 @Controller
 public class UserController {
@@ -31,8 +33,11 @@ public class UserController {
     }
 
     @GetMapping("/admin")
-    public String listUserAdmin(Model model) {
+    public String listUserAdmin(Model model, Principal principal) {
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("roles", roleService.getAllRoles());
+        model.addAttribute("currentUser", userService.findUserByName(principal.getName()));
+        System.out.println(principal.getName());
         return "admin";
     }
 

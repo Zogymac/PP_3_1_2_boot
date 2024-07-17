@@ -12,6 +12,7 @@ import ru.alex.Boot.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -35,18 +36,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void updateUser(User user) {
         if (user.getId() != null) {
             User existingUser = findUserById(user.getId());
-            if (user.getName() != null && !user.getName().equals(existingUser.getName())) {
-                existingUser.setName(user.getName());
-            }
-            if (user.getRole() != null && !user.getRole().equals(existingUser.getRole())) {
-                existingUser.setRole(user.getRole());
-            }
-            if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())) {
-                existingUser.setEmail(user.getEmail());
-            }
+
+            updateFieldIfNotNull(existingUser::setName, user.getName(), existingUser.getName());
+            updateFieldIfNotNull(existingUser::setName, user.getName(), existingUser.getName());
+            updateFieldIfNotNull(existingUser::setName, user.getName(), existingUser.getName());
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
+
             userRepository.save(existingUser);
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -65,6 +62,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findAll();
     }
 
+    @Override
+    public User findUserByName(String name) {
+        return userRepository.findByName(name).orElse(null);
+    }
 
     @Override
     @Transactional
@@ -77,5 +78,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userOptional.get();
     }
 
+    private <T> void updateFieldIfNotNull(Consumer<T> setter, T newValue, T existingValue) {
+        if (newValue != null && !newValue.equals(existingValue)) {
+            setter.accept(newValue);
+        }
+    }
 
 }
