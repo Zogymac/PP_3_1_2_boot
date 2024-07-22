@@ -1,29 +1,91 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
-    <title>Users</title>
+    <title>User Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+            crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Users</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="user : ${users}">
-                <td th:text="${user.getId()}"></td>
-                <td th:text="${user.getName()}"></td>
-                <td th:text="${user.getEmail()}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <a href="/logout">Logout</a>
+
+<header class="navbar sticky-top bg-dark" data-bs-theme="dark">
+    <div class="flex-md-nowrap p-0 shadow justify-content-lg-start">
+        <a class="navbar-brand text-white" th:text="${currentUser.name}">123</a>
+        <span class="navbar-brand text-white">with roles:</span>
+        <span class="navbar-brand text-white" th:each="role : ${currentUser.getRole()}"
+              th:text="${role.name.replaceFirst('ROLE_', ' ')}">roles</span>
+    </div>
+    <ul class="navbar-nav float-lg-right">
+        <div class="nav-item">
+            <form th:action="@{/logout}" th:method="POST">
+                <button type="submit" class="btn btn-dark text-right" style="color: gray">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </ul>
+</header>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2">
+            <ul class="nav flex-column nav-pills" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="v-pills-profile-tab" data-bs-toggle="tab" data-bs-target="#userPage"
+                       aria-controls="v-pills-user"
+                       sec:authority="hasAuthority('ROLE_USER')" role="tab">User</a>
+                </li>
+            </ul>
+        </div>
+
+        <main class="col-10 bg-light">
+
+            <div class="tab-content">
+
+                <div class="tab-pane fade show active" id="userPage"
+                     aria-labelledby="nav-user-tab">
+
+                    <div class="container-fluid"><h1>User list</h1></div>
+                    <div class="card">
+                        <div class="card-header"><h4>About user</h4></div>
+                        <div class="card-body">
+                            <table class="table table-striped table-sm">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Roles</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr th:each="user : ${users}">
+                                    <td th:text="${user.id}"></td>
+                                    <td th:text="${user.name}"></td>
+                                    <td th:text="${user.email}"></td>
+                                    <td>
+                                        <th:block th:each="role:${user.role}"
+                                                  th:utext="${role.getName().replaceFirst('ROLE_', '') + ' '}"></th:block>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+</div>
 </body>
 </html>
