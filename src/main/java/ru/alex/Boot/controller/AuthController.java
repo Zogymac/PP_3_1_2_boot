@@ -55,7 +55,7 @@ public class AuthController {
             return "/auth/registration";
         }
 
-        userService.updateUser(user);
+        userService.saveOrUpdateUser(user);
 
         return "redirect:/auth/login";
     }

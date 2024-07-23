@@ -65,13 +65,13 @@ public class UserController {
 
     @PostMapping("/admin/edit")
     public String saveUser(@ModelAttribute("user") User user) {
-        userService.updateUser(user);
+        userService.saveOrUpdateUser(user);
         return "redirect:/admin";
     }
 
     @PostMapping("/admin/edit/{id}")
     public String saveUser(@PathVariable("id") Long id, @ModelAttribute("user") User user) {
-        userService.updateUser(user);
+        userService.saveOrUpdateUser(user);
         return "redirect:/admin";
     }
 

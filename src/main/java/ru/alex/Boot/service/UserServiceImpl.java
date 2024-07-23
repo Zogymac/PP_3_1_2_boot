@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Transactional
     @Override
-    public void updateUser(User user) {
+    public void saveOrUpdateUser(User user) {
         if (user.getId() != null) {
             User existingUser = findUserById(user.getId());
 
