@@ -32,6 +32,12 @@ public class UserRestController {
         List<User> response = userService.getAllUsers();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @GetMapping("/users/current")
+    public ResponseEntity<User> getCurrentUser(Principal principal) {
+        User currentUser = userService.findUserByName(principal.getName());
+        return new ResponseEntity<>(currentUser, HttpStatus.OK);
+    }
+
 
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> listRoles(@ModelAttribute("user") User user, Model model, Principal principal) {

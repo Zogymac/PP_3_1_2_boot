@@ -3,21 +3,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function fetchUsers() {
-    fetch('http://localhost:8080/api/users')
+    fetch('http://localhost:8080/api/users/current')
         .then(response =>  response.json())
-        .then(users => {
+        .then(user => {
             const userTabTableBody = document.querySelector('#userPage tbody');
             userTabTableBody.innerHTML = '';
-            users.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+            const row = document.createElement('tr');
+            row.innerHTML = `
                     <td>${user.id}</td>
                     <td>${user.name}</td>
                     <td>${user.email}</td>
                     <td>${user.role.map(role => role.name.replace('ROLE_', '')).join(', ')}</td>
                 `;
-                userTabTableBody.appendChild(row);
-            });
+            userTabTableBody.appendChild(row);
         })
         .catch(error => console.log(error));
 }
