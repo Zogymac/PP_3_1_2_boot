@@ -40,10 +40,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             updateFieldIfNotNull(existingUser::setName, user.getName(), existingUser.getName());
             updateFieldIfNotNull(existingUser::setEmail, user.getEmail(), existingUser.getEmail());
             updateFieldIfNotNull(existingUser::setRole, user.getRole(), existingUser.getRole());
-            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            if (user.getPassword() != null && !user.getPassword().isEmpty() && !user.getPassword().equals(existingUser.getPassword())) {
                 existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
-
             userRepository.save(existingUser);
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
